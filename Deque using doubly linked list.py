@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Aug 18 00:03:39 2020
+Created on Tue Aug 18 00:16:21 2020
 
 @author: rahul
 """
@@ -10,9 +10,11 @@ class Node:
     def __init__(self, data):
         self.data = data
         self.next = None
+        self.prev = None
 
 
-class Queue:
+class Deque:
+
     def __init__(self):
         self.size = 0
         self.head = None
@@ -29,23 +31,52 @@ class Queue:
     def __len__(self):
         return self.size
 
-    def enqueue(self, data):
+    def appendleft(self, data):
         if self.size == 0:
             self.head = Node(data)
             self.tail = self.head
             self.size += 1
             return
         node = Node(data)
+        node.next = self.head
+        self.head.prev = node
+        self.head = node
+        self.size += 1
+        return
+
+    def append(self, data):
+        if self.size == 0:
+            self.head = Node(data)
+            self.tail = self.head
+            self.size += 1
+            return
+        node = Node(data)
+        node.prev = self.tail
         self.tail.next = node
         self.tail = node
         self.size += 1
         return
 
-    def front(self):
-        if self.head:
-            return self.head.data
+    def pop(self):
+        if self.size == 0:
+            raise Error('dequeue from empty queue')
+        if self.size == 1:
+            result = self.tail.data
+            self.head = self.tail = None
+            self.size -= 1
+            return result
+        result = self.tail.data
+        node = self.tail
+        self.tail = self.tail.prev
+        self.tail.next = None
+        self.size -= 1
+        if self.size == 1:
+            self.tail = self.head
 
-    def dequeue(self):
+        del (node)
+        return result
+
+    def popleft(self):
         if self.size == 0:
             raise Error('dequeue from empty queue')
         if self.size == 1:
@@ -53,9 +84,10 @@ class Queue:
             self.head = self.tail = None
             self.size -= 1
             return result
+        result = self.head.data
         node = self.head
-        result = node.data
-        self.head = node.next
+        self.head = self.head.next
+        self.head.prev = None
         self.size -= 1
         if self.size == 1:
             self.tail = self.head

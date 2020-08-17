@@ -51,5 +51,6 @@ class Stack:
     def __len__(self):
         return self.__top + 1
 
+
 class Error(Exception):
     pass
