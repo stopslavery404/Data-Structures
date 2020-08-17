@@ -11,7 +11,7 @@ class Queue:
 
     def enqueue(self, item):
         if self.length==self.maxsize:
-            raise OverflowError('queue is full')
+            raise Error("Overflow")
         self.arr[self.tail] = item
         self.length+=1
         self.tail=(self.tail+1)%self.maxsize
@@ -19,7 +19,7 @@ class Queue:
 
     def dequeue(self):
         if self.length==0:
-            raise OverflowError('queue is empty')
+            raise Error("dequeue from empty queue.")
         result = self.arr[self.head]
         self.arr[self.head] = None
         self.length-=1
@@ -35,7 +35,8 @@ class Queue:
     def front(self):
         if not self.empty():
             return self.arr[self.head]
-
+class Error(Exception):
+    pass
 
 q = Queue(4)
 print(q)

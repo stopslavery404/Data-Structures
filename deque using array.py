@@ -1,3 +1,6 @@
+class Error(Exception):
+    pass
+
 class Deque:
     def __repr__(self):
         arr=[]
@@ -16,7 +19,7 @@ class Deque:
 
     def appendleft(self, item):
         if self.full():
-            raise OverflowError('queue is full')
+            raise Error('queue is full')
         self.arr[self.tail] = item
         self.length+=1
         self.tail=(self.tail+1)%self.maxsize
@@ -24,7 +27,7 @@ class Deque:
 
     def pop(self):
         if self.empty():
-            raise OverflowError('queue is empty')
+            raise Error('queue is empty')
         result = self.arr[self.head]
         self.arr[self.head] = None
         self.length-=1
@@ -32,13 +35,13 @@ class Deque:
         return result
     def append(self,item):
         if self.full():
-            raise OverflowError('queue is full')
+            raise Error('queue is full')
         self.head=(self.head-1)%self.maxsize
         self.arr[self.head]=item
         self.length+=1
     def popleft(self):
         if self.empty():
-            raise OverflowError('queue is empty')
+            raise Error('queue is empty')
         self.tail=(self.tail-1)%self.maxsize
         result=self.arr[self.tail]
         self.arr[self.tail]=None
@@ -51,7 +54,7 @@ class Deque:
         return self.length==0
 
     def full(self):
-        self.length==self.maxsize
+        return self.length==self.maxsize
 
     def front(self):
         if not self.empty():
@@ -60,7 +63,7 @@ class Deque:
         if not self.empty():
             return self.arr[self.tail]
 
-
+'''
 q = Deque(4)
 print(q)
 q.appendleft(4)
@@ -76,4 +79,4 @@ print(q)
 q.append(5)
 print(q)
 q.appendleft(2)
-print(q)
+print(q)'''

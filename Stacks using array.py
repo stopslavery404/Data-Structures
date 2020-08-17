@@ -31,30 +31,25 @@ class Stack:
         '''push an item into the stack
         example push(item)'''
         if self.__top == self.maxsize - 1:
-            raise StackOverflow("Stack is full, can't push items.")
+            raise Error("Stack Overflow")
         self.__top += 1
         self.__arr[self.__top] = item
 
     def pop(self):
         '''returns the top element and removes it from stack'''
         if self.isEmpty():
-            raise StackUnderflow("Stack is empty, nothing to pop.")
+            raise Error("Stack Underflow")
         self.__top -= 1
         return self.__arr[self.__top + 1]
 
     def top(self):
         '''returns the top element without removing'''
         if self.__top == -1:
-            raise StackUnderflow('stack is empty')
+            raise Error("Stack Underflow")
         return self.__arr[self.__top]
 
     def __len__(self):
         return self.__top + 1
 
-
-class StackOverflow(Exception):
-    pass
-
-
-class StackUnderflow(Exception):
+class Error(Exception):
     pass

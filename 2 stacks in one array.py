@@ -46,12 +46,12 @@ class TwoStacks:
         example push(item)'''
         if stack_no == 1:
             if self.__top1 ==self.__top2-1 and self.__top1<self.maxsize:
-                raise StackOverflow("Stack is full, can't push items.")
+                raise Error("StackOverflow")
             self.__top1 += 1
             self.__arr[self.__top1] = item
         elif stack_no == 2:
             if self.__top2==self.__top1+1 and self.__top2>0:
-                raise StackOverflow("stack is full, can't push items")
+                raise Error("StackOverflow")
             self.__top2-=1
             self.__arr[self.__top2]=item
 
@@ -59,14 +59,14 @@ class TwoStacks:
         '''returns the top element and removes it from stack'''
         if stack_no == 1:            
             if self.isEmpty(1):
-                raise StackUnderflow("Stack1 is empty, nothing to pop.")
+                raise Error("StackUnderflow")
             res=self.__arr[self.__top1] 
             self.__arr[self.__top1]=0    #not important but for security reasons
             self.__top1 -= 1
             return res
         elif stack_no == 2:
             if self.isEmpty(2):
-                raise StackUnderflow('Stack2 is empty, nothing to pop.')
+                raise Error("StackUnderflow")
             res=self.__arr[self.__top2] 
             self.__arr[self.__top2]=0
             self.__top2+=1
@@ -76,11 +76,11 @@ class TwoStacks:
         '''returns the top element without removing'''
         if stack_no == 1:
             if self.__top1 == -1:
-                raise StackUnderflow('stack1 is empty')
+                raise Error("StackUnderflow")
             return self.__arr[self.__top1]
         if stack_no == 2:
             if self.__top2 == self.maxsize:
-                raise StackUnderflow('stack2 is empty')
+                raise Error("StackUnderflow")
             return self.__arr[self.__top2]
 
     def __len__(self,stack_no):
@@ -92,9 +92,5 @@ class TwoStacks:
         
 
 
-class StackOverflow(Exception):
-    pass
-
-
-class StackUnderflow(Exception):
+class Error(Exception):
     pass
