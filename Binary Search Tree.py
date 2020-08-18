@@ -15,9 +15,15 @@ class Node:
 
 
 class BinarySearchTree:
-    def __init__(self):
+    def __init__(self, arr=None):
         self.root = None
-
+        if arr:
+            from random import shuffle
+            temp= [x for x in arr]
+            shuffle(temp)
+            for x in temp:
+                self.insert(x)
+                
     def insert(self, item):
         if self.root is None:
             self.root = Node(item)
@@ -153,7 +159,23 @@ class BinarySearchTree:
             node = node.parent
             arr.append(node.data)
         print(arr)
-
+    class Iterator:
+        def __init__(self,root):
+            self.node=root
+            self.stack=[]
+        def __next__(self):
+            if self.node is None and not self.stack:
+                raise StopIteration
+            while self.node:
+                self.stack.append(self.node)
+                self.node=self.node.left
+            self.node=self.stack.pop()
+            item=self.node.data
+            self.node=self.node.right
+            return item
+    def __iter__(self):
+        return self.Iterator(self.root)
+        
 
 t = BinarySearchTree()
 
