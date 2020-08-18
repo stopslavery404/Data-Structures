@@ -13,6 +13,15 @@ class Node:
 
 
 class SinglyLinkedList:
+    class Iterator:
+        def __init__(self,head):
+            self.current=head
+        def __next__(self):
+            if self.current is None:
+                raise StopIteration
+            item=self.current.data
+            self.current=self.current.next
+            return item
     def __repr__(self):
         arr = []
         node = self.head
@@ -63,6 +72,8 @@ class SinglyLinkedList:
         if next_node:
             prev_node.next = next_node.next
             del (next_node)
+    def __iter__(self):
+        return self.Iterator(self.head)
 
 
 class Error(Exception):

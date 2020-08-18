@@ -14,6 +14,15 @@ class Node:
 
 
 class SinglyLinkedList:
+    class Iterator:
+        def __init__(self,head):
+            self.current=head
+        def __next__(self):
+            if not self.current:
+                raise StopIteration
+            item=self.current.data
+            self.current=self.current.next
+            return item
     def __repr__(self):
         arr = []
         node = self.head
@@ -25,6 +34,7 @@ class SinglyLinkedList:
     def __init__(self):
         self.size = 0
         self.head = None
+        self.current=None
 
     def insert(self, data):
         if self.size == 0:
@@ -64,6 +74,9 @@ class SinglyLinkedList:
             if node.prev:
                 node.prev.next = node.next
             del (node)
+    def __iter__(self):
+        return self.Iterator(self.head)
+
 
 
 class Error(Exception):
@@ -73,3 +86,4 @@ class Error(Exception):
 l = SinglyLinkedList()
 for x in [1, 2, 5, 4]:
     l.insert(x)
+print(min(l))
