@@ -47,11 +47,12 @@ class BinarySearchTree:
         node = self.root
 
         def inorderUtil(node):
-            if node.left:
-                inorderUtil(node.left)
-            print(node.data, end=' ')
-            if node.right:
-                inorderUtil(node.right)
+            if node:
+                if node.left:
+                    inorderUtil(node.left)
+                print(node.data, end=' ')
+                if node.right:
+                    inorderUtil(node.right)
 
         inorderUtil(node)
         print()
@@ -60,11 +61,12 @@ class BinarySearchTree:
         node = self.root
 
         def preorderUtil(node):
-            print(node.data, end=' ')
-            if node.left:
-                preorderUtil(node.left)
-            if node.right:
-                preorderUtil(node.right)
+            if node:
+                print(node.data, end=' ')
+                if node.left:
+                    preorderUtil(node.left)
+                if node.right:
+                    preorderUtil(node.right)
 
         preorderUtil(node)
         print()
@@ -73,12 +75,12 @@ class BinarySearchTree:
         node = self.root
 
         def postorderUtil(node):
-
-            if node.left:
-                postorderUtil(node.left)
-            if node.right:
-                postorderUtil(node.right)
-            print(node.data, end=' ')
+            if node:
+                if node.left:
+                    postorderUtil(node.left)
+                if node.right:
+                    postorderUtil(node.right)
+                print(node.data, end=' ')
 
         postorderUtil(node)
         print()
@@ -96,12 +98,42 @@ class BinarySearchTree:
 
         return searchUtil(self.root, item)
 
+    def successor(self, node):
+        current_node = node.right
+        while current_node and current_node.left:
+            current_node = current_node.left
+        return current_node
+
+    def predecessor(self, node):
+        current_node = node.left
+        while current_node and current_node.right:
+            current_node = current_node.right
+        return current_node
+
+    def delete(self, item):
+        target = self.search(item)
+        if target is None:
+            return
+        successor = self.successor(target)
+        while successor:
+            target.data, successor.data = successor.data, target.data
+            target = successor
+            successor = self.successor(target)
+        if target.parent:
+            if target.parent.left == target:
+                target.parent.left = None
+            else:
+                target.parent.right = None
+            target.parent = None
+        elif target == self.root:
+            self.root = None
+
 
 t = BinarySearchTree()
-for x in [10, 1, 2, 3, 6, 4, 9]:
+
+for x in [17, 3, 2, 6, 8, 5, 18, 1, 14, 13, 7, 4, 9, 11, 10, 16, 19, 20, 12, 15]:
     t.insert(x)
-t.inorder()
-t.preorder()
-t.postorder()
-n = t.search(5)
-print(n)
+for i in range(1, 21):
+    print(i)
+    t.delete(i)
+    t.preorder()
