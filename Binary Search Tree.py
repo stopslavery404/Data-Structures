@@ -128,12 +128,34 @@ class BinarySearchTree:
         elif target == self.root:
             self.root = None
 
+    def max(self):
+        m = float('-inf')
+        node = self.root
+        while node and node.right:
+            node = node.right
+        if node:
+            m = max(m, node.data)
+        return m
+
+    def min(self):
+        m = float('inf')
+        node = self.root
+        while node and node.left:
+            node = node.left
+        if node:
+            m = min(m, node.data)
+        return m
+
+    def path_to_root(self, node):
+        arr = []
+        arr.append(node.data)
+        while node != self.root:
+            node = node.parent
+            arr.append(node.data)
+        print(arr)
+
 
 t = BinarySearchTree()
 
 for x in [17, 3, 2, 6, 8, 5, 18, 1, 14, 13, 7, 4, 9, 11, 10, 16, 19, 20, 12, 15]:
     t.insert(x)
-for i in range(1, 21):
-    print(i)
-    t.delete(i)
-    t.preorder()
