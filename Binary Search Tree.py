@@ -19,11 +19,11 @@ class BinarySearchTree:
         self.root = None
         if arr:
             from random import shuffle
-            temp= [x for x in arr]
+            temp = [x for x in arr]
             shuffle(temp)
             for x in temp:
                 self.insert(x)
-                
+
     def insert(self, item):
         if self.root is None:
             self.root = Node(item)
@@ -105,23 +105,42 @@ class BinarySearchTree:
         return searchUtil(self.root, item)
 
     def successor(self, node):
-        current_node = node.right
-        while current_node and current_node.left:
-            current_node = current_node.left
-        return current_node
+        if not node:
+            return
+        if node.right:
+            current_node = node.right
+            while current_node and current_node.left:
+                current_node = current_node.left
+            return current_node
+        else:
+            current_node = node
+            while current_node.parent and current_node.parent.left != current_node:
+                current_node = current_node.parent
+            if current_node.parent:
+                return current_node.parent
 
     def predecessor(self, node):
-        current_node = node.left
-        while current_node and current_node.right:
-            current_node = current_node.right
-        return current_node
+        if not node:
+            return
+        if node.left:
+            current_node = node.left
+            while current_node and current_node.right:
+                current_node = current_node.right
+            return current_node
+        else:
+            current_node = node
+            while current_node.parent and current_node.parent.right != current_node:
+                current_node = current_node.parent
+            if current_node.parent:
+                return current_node.parent
 
     def delete(self, item):
         target = self.search(item)
         if target is None:
             return
-        successor = self.successor(target)
-        while successor:
+        if target.right:
+            successor = self.successor(target)
+        while target.right:
             target.data, successor.data = successor.data, target.data
             target = successor
             successor = self.successor(target)
@@ -159,25 +178,32 @@ class BinarySearchTree:
             node = node.parent
             arr.append(node.data)
         print(arr)
+
     class Iterator:
-        def __init__(self,root):
-            self.node=root
-            self.stack=[]
+        def __init__(self, root):
+            self.node = root
+            self.stack = []
+
         def __next__(self):
             if self.node is None and not self.stack:
                 raise StopIteration
             while self.node:
                 self.stack.append(self.node)
-                self.node=self.node.left
-            self.node=self.stack.pop()
-            item=self.node.data
-            self.node=self.node.right
+                self.node = self.node.left
+            self.node = self.stack.pop()
+            item = self.node.data
+            self.node = self.node.right
             return item
+
     def __iter__(self):
         return self.Iterator(self.root)
-        
+
 
 t = BinarySearchTree()
 
 for x in [17, 3, 2, 6, 8, 5, 18, 1, 14, 13, 7, 4, 9, 11, 10, 16, 19, 20, 12, 15]:
     t.insert(x)
+for i in range(2, 21):
+    print(i, t.predecessor(t.search(i)).data)
+#   print(i, t.delete(i))
+#  t.inorder()
