@@ -138,12 +138,11 @@ class BinarySearchTree:
         target = self.search(item)
         if target is None:
             return
-        if target.right:
-            successor = self.successor(target)
         while target.right:
+            successor = self.successor(target)
             target.data, successor.data = successor.data, target.data
             target = successor
-            successor = self.successor(target)
+
         if target.parent:
             if target.parent.left == target:
                 target.parent.left = None

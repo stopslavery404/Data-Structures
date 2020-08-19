@@ -45,7 +45,7 @@ class BinarySearchTree:
                     return
             elif item == node.data:
                 if node.repeat_left:
-                    node.repeat_left=False
+                    node.repeat_left = False
                     if node.left:
                         insertUtil(node.left, item)
                     else:
@@ -54,7 +54,7 @@ class BinarySearchTree:
                         new_node.parent = node
                         return
                 else:
-                    node.repeat_left=True
+                    node.repeat_left = True
                     if node.right:
                         insertUtil(node.right, item)
                     else:
@@ -163,12 +163,11 @@ class BinarySearchTree:
         target = self.search(item)
         if target is None:
             return
-        if target.right:
-            successor = self.successor(target)
         while target.right:
+            successor = self.successor(target)
             target.data, successor.data = successor.data, target.data
             target = successor
-            successor = self.successor(target)
+
         if target.parent:
             if target.parent.left == target:
                 target.parent.left = None
