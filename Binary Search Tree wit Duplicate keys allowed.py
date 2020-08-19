@@ -45,6 +45,7 @@ class BinarySearchTree:
                     return
             elif item == node.data:
                 if node.repeat_left:
+                    node.repeat_left=False
                     if node.left:
                         insertUtil(node.left, item)
                     else:
@@ -53,6 +54,7 @@ class BinarySearchTree:
                         new_node.parent = node
                         return
                 else:
+                    node.repeat_left=True
                     if node.right:
                         insertUtil(node.right, item)
                     else:
