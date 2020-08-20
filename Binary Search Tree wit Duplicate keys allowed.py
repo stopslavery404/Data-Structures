@@ -129,14 +129,21 @@ class BinarySearchTree:
 
         return searchUtil(self.root, item)
 
+    def subtree_minimum(self, node):
+        while node.left:
+            node = node.left
+        return node
+
+    def subtree_maximum(self, node):
+        while node.right:
+            node = node.right
+        return node
+
     def successor(self, node):
         if not node:
             return
         if node.right:
-            current_node = node.right
-            while current_node and current_node.left:
-                current_node = current_node.left
-            return current_node
+            return self.subtree_minimum(node.right)
         else:
             current_node = node
             while current_node.parent and current_node.parent.left != current_node:
@@ -148,10 +155,7 @@ class BinarySearchTree:
         if not node:
             return
         if node.left:
-            current_node = node.left
-            while current_node and current_node.right:
-                current_node = current_node.right
-            return current_node
+            return self.subtree_maximum(node.left)
         else:
             current_node = node
             while current_node.parent and current_node.parent.right != current_node:
