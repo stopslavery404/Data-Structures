@@ -66,60 +66,58 @@ class RedBlackTree:
         y.parent = x
 
     def insert(self, item):
-        z = Node(item)
-        z.left = self.NIL
-        z.right = self.NIL
-        y = self.NIL
-        x = self.root
+        target_node = Node(item)
+        prev_node = self.NIL
+        current_node = self.root
 
-        while x != self.NIL:
-            y = x
-            if z.data < x.data:
-                x = x.left
+        while current_node != self.NIL:
+            prev_node = current_node
+            if target_node.data < current_node.data:
+                current_node = current_node.left
             else:
-                x = x.right
-        z.parent = y
-        if y == self.NIL:
-            self.root = z
-        elif z.data < y.data:
-            y.left = z
+                current_node = current_node.right
+        target_node.parent = prev_node
+        if prev_node == self.NIL:
+            self.root = target_node
+        elif target_node.data < prev_node.data:
+            prev_node.left = target_node
         else:
-            y.right = z
-        z.left = self.NIL
-        z.right = self.NIL
-        z.color = RED
-        self.insertFixup(z)
+            prev_node.right = target_node
+        target_node.left = self.NIL
+        target_node.right = self.NIL
+        target_node.color = RED
+        self.insertFixup(target_node)
 
-    def insertFixup(self, z):
-        while z.parent.color == RED:
-            if z.parent == z.parent.parent.left:
-                y = z.parent.parent.right
-                if y.color == RED:
-                    z.parent.color = BLACK
-                    y.color = BLACK
-                    z.parent.parent.color = RED
-                    z = z.parent.parent
+    def insertFixup(self, node):
+        while node.parent.color == RED:
+            if node.parent == node.parent.parent.left:
+                uncle = node.parent.parent.right
+                if uncle.color == RED:
+                    node.parent.color = BLACK
+                    uncle.color = BLACK
+                    node.parent.parent.color = RED
+                    node = node.parent.parent
                 else:
-                    if z == z.parent.right:
-                        z = z.parent
-                        self.left_rotate(z)
-                    z.parent.color = BLACK
-                    z.parent.parent.color = RED
-                    self.right_rotate(z.parent.parent)
+                    if node == node.parent.right:
+                        node = node.parent
+                        self.left_rotate(node)
+                    node.parent.color = BLACK
+                    node.parent.parent.color = RED
+                    self.right_rotate(node.parent.parent)
             else:
-                y = z.parent.parent.left
-                if y.color == RED:
-                    z.parent.color = BLACK
-                    y.color = BLACK
-                    z.parent.parent.color = RED
-                    z = z.parent.parent
+                uncle = node.parent.parent.left
+                if uncle.color == RED:
+                    node.parent.color = BLACK
+                    uncle.color = BLACK
+                    node.parent.parent.color = RED
+                    node = node.parent.parent
                 else:
-                    if z == z.parent.left:
-                        z = z.parent
-                        self.left_rotate(z)
-                    z.parent.color = BLACK
-                    z.parent.parent.color = RED
-                    self.left_rotate(z.parent.parent)
+                    if node == node.parent.left:
+                        node = node.parent
+                        self.right_rotate(node)
+                    node.parent.color = BLACK
+                    node.parent.parent.color = RED
+                    self.left_rotate(node.parent.parent)
         self.root.color = BLACK
 
     def inorder(self):
@@ -235,80 +233,79 @@ class RedBlackTree:
         v.parent = u.parent
 
     def delete(self, item):
-        z = self.search(item)
-        if z is self.NIL:
+        target = self.search(item)
+        if target is self.NIL:
             return
-        y = z
-        y_original_color = y.color
-        if z.left is self.NIL:
-            x = z.right
-            self.transplant(z, z.right)
-        elif z.right is self.NIL:
-            x = z.left
-            self.transplant(z, z.left)
+        prev_node = target
+        original_color = prev_node.color
+        if target.left is self.NIL:
+            current_node = target.right
+            self.transplant(target, target.right)
+        elif target.right is self.NIL:
+            current_node = target.left
+            self.transplant(target, target.left)
         else:
-            y = self.subtree_minimum(z.right)
-            y_original_color = y.color
-            x = y.right
-            if y.parent == z:
-                x.parent = y
+            prev_node = self.subtree_minimum(target.right)
+            original_color = prev_node.color
+            current_node = prev_node.right
+            if prev_node.parent == target:
+                current_node.parent = prev_node
             else:
-                self.transplant(y, y.right)
-                y.right = z.right
-                y.right.parent = y
-            self.transplant(z, y)
-            y.left = z.left
-            y.left.parent = y
-            y.color = z.color
-        if y_original_color == BLACK:
-            self.deleteFixup(x)
+                self.transplant(prev_node, prev_node.right)
+                prev_node.right = target.right
+                prev_node.right.parent = prev_node
+            self.transplant(target, prev_node)
+            prev_node.left = target.left
+            prev_node.left.parent = prev_node
+            prev_node.color = target.color
+        if original_color == BLACK:
+            self.deleteFixup(current_node)
 
-    def deleteFixup(self, x):
-        while x != self.root and x.color == BLACK:
-            if x == x.parent.left:
-                w = x.parent.right
-                if w.color == RED:
-                    w.color = BLACK
-                    x.parent.color = RED
-                    self.left_rotate(x.parent)
-                    w = x.parent.right
-                if w.left.color == BLACK and w.right.color == BLACK:
-                    w.color = RED
-                    x = x.parent
+    def deleteFixup(self, current_node):
+        while current_node != self.root and current_node.color == BLACK:
+            if current_node == current_node.parent.left:
+                sibling = current_node.parent.right
+                if sibling.color == RED:
+                    sibling.color = BLACK
+                    current_node.parent.color = RED
+                    self.left_rotate(current_node.parent)
+                    sibling = current_node.parent.right
+                if sibling.left.color == BLACK and sibling.right.color == BLACK:
+                    sibling.color = RED
+                    current_node = current_node.parent
                 else:
-                    if w.right.color == BLACK:
-                        w.left.color = BLACK
-                        w.color = RED
-                        self.right_rotate(w)
-                        w = x.parent.right
-                    w.color = x.parent.color
-                    x.parent.color = BLACK
-                    w.right.color = BLACK
-                    self.left_rotate(x.parent)
-                    x = self.root
-
-            elif x == x.parent.right:
-                w = x.parent.left
-                if w.color == RED:
-                    w.color = BLACK
-                    x.parent.color = RED
-                    self.right_rotate(x.parent)
-                    w = x.parent.left
-                if w.right.color == BLACK and w.left.color == BLACK:
-                    w.color = RED
-                    x = x.parent
+                    if sibling.right.color == BLACK:
+                        sibling.left.color = BLACK
+                        sibling.color = RED
+                        self.right_rotate(sibling)
+                        sibling = current_node.parent.right
+                    sibling.color = current_node.parent.color
+                    current_node.parent.color = BLACK
+                    sibling.right.color = BLACK
+                    self.left_rotate(current_node.parent)
+                    current_node = self.root
+            elif current_node == current_node.parent.right:
+                sibling = current_node.parent.left
+                if sibling.color == RED:
+                    sibling.color = BLACK
+                    current_node.parent.color = RED
+                    self.right_rotate(current_node.parent)
+                    sibling = current_node.parent.left
+                if sibling.left.color == BLACK and sibling.right.color == BLACK:
+                    sibling.color = RED
+                    current_node = current_node.parent
                 else:
-                    if w.left.color == BLACK:
-                        w.right.color = BLACK
-                        w.color = RED
-                        self.left_rotate(w)
-                        w = x.parent.left
-                    w.color = x.parent.color
-                    x.parent.color = BLACK
-                    w.left.color = BLACK
-                    self.right_rotate(x.parent)
-                    x = self.root
-        x.color = BLACK
+                    if sibling.left.color == BLACK:
+                        sibling.right.color = BLACK
+                        sibling.color = RED
+                        self.left_rotate(sibling)
+                        sibling = current_node.parent.left
+                    sibling.color = current_node.parent.color
+                    current_node.parent.color = BLACK
+                    sibling.left.color = BLACK
+                    self.right_rotate(current_node.parent)
+                    current_node = self.root
+        current_node.color = BLACK
 
     def max(self):
         node = self.root
@@ -356,12 +353,12 @@ class RedBlackTree:
 
 t = RedBlackTree()
 
-for x in range(21):
-    t.insert(x)
-
+t = RedBlackTree()
 t.inorder()
 s = [x for x in range(21)]
 shuffle(s)
+t = RedBlackTree(s)
+t.inorder()
 
 for x in s:
     print(x)
