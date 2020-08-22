@@ -330,6 +330,18 @@ class RedBlackTree:
             node = node.parent
             arr.append(node.data)
         print(arr)
+    def height(self):
+        def maxDepth(node):
+            if node is None:
+                return 0
+            ldepth = maxDepth(node.left)
+            rdepth = maxDepth(node.right)
+            if ldepth > rdepth:
+                return ldepth + 1
+            else:
+                return rdepth + 1
+
+        return maxDepth(self.root)
 
     class Iterator:
         def __init__(self, root):
@@ -346,21 +358,15 @@ class RedBlackTree:
             item = self.node.data
             self.node = self.node.right
             return item
-
+    
     def __iter__(self):
         return self.Iterator(self.root)
 
 
 t = RedBlackTree()
 
-t = RedBlackTree()
-t.inorder()
-s = [x for x in range(21)]
-shuffle(s)
-t = RedBlackTree(s)
-t.inorder()
 
-for x in s:
-    print(x)
-    t.delete(x)
-    t.inorder()
+for x in range(2**20):
+    t.insert(x)
+#t.preorder()
+print(t.height())

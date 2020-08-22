@@ -198,15 +198,28 @@ class BinarySearchTree:
             self.node = self.node.right
             return item
 
+    def height(self):
+        def maxDepth(node):
+            if node is None:
+                return 0
+            ldepth = maxDepth(node.left)
+            rdepth = maxDepth(node.right)
+            if ldepth > rdepth:
+                return ldepth + 1
+            else:
+                return rdepth + 1
+
+        return maxDepth(self.root)
+
     def __iter__(self):
         return self.Iterator(self.root)
 
 
 t = BinarySearchTree()
 
-for x in [17, 3, 2, 6, 8, 5, 18, 1, 14, 13, 7, 4, 9, 11, 10, 16, 19, 20, 12, 15]:
+
+
+for x in range(2**10):
     t.insert(x)
-for i in range(2, 21):
-    print(i, t.predecessor(t.search(i)).data)
-#   print(i, t.delete(i))
-#  t.inorder()
+#t.preorder()
+print(t.height())
