@@ -364,9 +364,28 @@ class RedBlackTree:
 
 
 t = RedBlackTree()
+import time
 
 
-for x in range(2**20):
+s = time.time()
+for x in range(2 ** 20):
     t.insert(x)
-#t.preorder()
+print('height of tree after 1Million insertions', t.height())
+
+e = time.time()
+print('time taken for 1Million insertions', e - s)
+
+s = time.time()
+for x in range(2 ** 20):
+    t.search(x)
+e = time.time()    
+print('time taken for 1Million searches', e-s)
+
+
+
+s = time.time()
+for x in range(2 ** 20):
+    t.delete(x)
+e = time.time()
+print('time taken for 1Million deletions', e - s)
 print(t.height())

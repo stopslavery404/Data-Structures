@@ -79,7 +79,7 @@ class Skiplist:
                 self.right_top.top = curr.right
                 self.right_top = curr.right
 
-    def remove(self, data):
+    def delete(self, data):
         curr = self.search(data)
         if curr is None:
             return
@@ -102,8 +102,38 @@ class Skiplist:
             s += '\n'
             lmost = lmost.bottom
         return s
+    def height(self):
+        h=0
+        node=self.left_top
+        while node.bottom:
+            h+=1
+            node=node.bottom
+        return h
 
+
+
+import time
 
 t = Skiplist()
-for i in range(10):
-    t.insert(i)
+s = time.time()
+for x in range(2 ** 20):
+    t.insert(x)
+print('height of tree after 1Million insertions', t.height())
+
+e = time.time()
+print('time taken for 1Million insertions', e - s)
+
+s = time.time()
+for x in range(2 ** 20):
+    t.search(x)
+e = time.time()    
+print('time taken for 1Million searches', e-s)
+
+
+
+s = time.time()
+for x in range(2 ** 20):
+    t.delete(x)
+e = time.time()
+print('time taken for 1Million deletions', e - s)
+

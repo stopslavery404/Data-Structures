@@ -5,19 +5,17 @@ Created on Sat Aug 22 06:13:15 2020
 @author: rahul
 """
 
-from random import randint
 
-K=2**32-1
 class Node:
     def __init__(self, data):
         self.parent = None
         self.left = None
         self.right = None
         self.data = data
-        self.priority = randint(0, K)
+        self.height = 1
 
 
-class Treap:
+class AVLTree:
     def __init__(self, arr=None):
         self.root = None
         if arr:
@@ -27,70 +25,86 @@ class Treap:
             for x in temp:
                 self.insert(x)
 
+    def getHeight(self, root):
+        if not root:
+            return 0
+        return root.height
+
+    def getBalance(self, root):
+        if not root:
+            return 0
+        return self.getHeight(root.left) - self.getHeight(root.right)
+
     def left_rotate(self, x):
         y = x.right
         b = y.left
-        x.right = b
 
-        if b:
+
+        if b != None:
             b.parent = x
-        y.parent = x.parent
-        if x.parent is None:
-            self.root = y
-        elif x.parent.left == x:
-            x.parent.left = y
-        else:
-            x.parent.right = y
+        x.right = b
         y.left = x
+        if x.parent and x.parent.left == x:
+            x.parent.left = y
+        elif x.parent and x.parent.right == x:
+            x.parent.right = y
+        y.parent = x.parent
         x.parent = y
 
-    def right_rotate(self, y):
-        x = y.left
-        b = x.right
+        x.height = 1 + max(self.getHeight(x.left), self.getHeight(x.right))
+        y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+        return y
 
-        y.left = b
-        if b:
-            b.parent = y
-        x.parent = y.parent
-        if y.parent is None:
-            self.root = x
-        elif y.parent.left == y:
-            y.parent.left = x
-        else:
-            y.parent.right = x
-        x.right = y
-        y.parent = x
+    def right_rotate(self, x):
+        y = x.left
+        b = y.right
 
    
 
-    def insert(self, item):
-        def insertUtil(node, item):
-            if item < node.data:
-                if node.left:
-                    insertUtil(node.left, item)
-                    if node.left.priority>node.priority:
-                        self.right_rotate(node)
-                else:
-                    new_node = Node(item)
-                    node.left = new_node
-                    new_node.parent = node
-                    return new_node
-            elif item > node.data:
-                if node.right:
-                    insertUtil(node.right, item)
-                    if node.right.priority>node.priority:
-                        self.left_rotate(node)
-                else:
-                    new_node = Node(item)
-                    node.right = new_node
-                    new_node.parent = node
-                    return new_node
-        if self.root is None:
-            self.root = Node(item)
-            return
-        
-        node = insertUtil(self.root, item)
+        if b:
+            b.parent = x
+        x.left = b
+        y.right = x
+        if x.parent:
+            if x.parent.right == x:
+                x.parent.right = y
+            else:
+                x.parent.left = y
+        y.parent = x.parent
+        x.parent = y
 
+        x.height = 1 + max(self.getHeight(x.left), self.getHeight(x.right))
+        y.height = 1 + max(self.getHeight(y.left), self.getHeight(y.right))
+        return y
+
+    def insert(self, item):
+        def insertUtil(root, item):
+            if not root:
+                return Node(item)
+            elif item < root.data:
+                root.left = insertUtil(root.left, item)
+                root.left.parent=root
+            elif item>root.data:
+                root.right = insertUtil(root.right, item)
+                root.right.parent=root
+
+            root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
+
+            balance = self.getBalance(root)
+            if balance > 1 and item < root.left.data:
+                return self.right_rotate(root)
+            elif balance > 1 and item >= root.left.data:
+                root.left = self.left_rotate(root.left)
+                return self.right_rotate(root)
+            elif balance < -1:
+                if item > root.right.data:
+                    return self.left_rotate(root)
+                else:
+                    root.right = self.right_rotate(root.right)
+                    self.left_rotate(root)
+            return root
+
+        self.root = insertUtil(self.root, item)
 
     def inorder(self):
         node = self.root
@@ -182,29 +196,57 @@ class Treap:
                 return current_node.parent
 
     def delete(self, item):
-        target = self.search(item)
-        if target is None:
-            return
-        while target.right:
-            successor = self.successor(target)
-            target.data, successor.data = successor.data, target.data
-            target = successor
-        
-        if target.parent and target.parent.left and target.parent.right:
-            if target.parent.left.priority<target.parent.right.priority:
-                self.left_rotate(target.parent)
+        def deleteUtil(root, item):
+            if not root:
+                return root
+            elif item < root.data:
+                root.left = deleteUtil(root.left, item)                
+                if root.left:
+                    root.left.parent=root
+            elif item > root.data:
+                root.right = deleteUtil(root.right, item)
+                if root.right:
+                    root.right.parent=root
             else:
-                self.right_rotate(target.parent)
-        
-        if target.parent:
-            if target.parent.left == target:
-                target.parent.left = None
-            else:
-                target.parent.right = None
-            #target.parent = None
-        elif target == self.root:
-            self.root = None
-        target.parent=None
+                if root.left is None:
+                    temp = root.right
+                    if temp:
+                        temp.parent=None
+                    root = None
+                    return temp
+                elif root.right is None:
+                    temp = root.left
+                    if temp:
+                        temp.parent=None
+                    root = None
+                    return temp
+                temp = self.subtree_minimum(root.right)
+                root.data = temp.data
+                root.right = deleteUtil(root.right, temp.data)
+                if root.right:
+                    root.right.parent=root
+            if root is None:
+                return root
+            root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
+            balance = self.getBalance(root)
+            if balance > 1:
+                if self.getBalance(root.left) >= 0:
+                    return self.right_rotate(root)
+                else:
+                    root.left = self.left_rotate(root.left)
+                    if root.left:
+                        root.left.parent=root
+                    return self.right_rotate(root)
+            if balance < -1:
+                if self.getBalance(root.right) <= 0:
+                    return self.left_rotate(root)
+                else:
+                    root.right = self.right_rotate(root.right)
+                    if root.right:
+                        root.right.parent=root
+                    return self.left_rotate(root)
+            return root
+        self.root=deleteUtil(self.root, item)
 
     def max(self):
         m = float('-inf')
@@ -250,23 +292,14 @@ class Treap:
 
     def __iter__(self):
         return self.Iterator(self.root)
-    def height(self):
-        def maxDepth(node):
-            if node is None:
-                return 0
-            ldepth=maxDepth(node.left)
-            rdepth=maxDepth(node.right)
-            if ldepth>rdepth:
-                return ldepth+1
-            else:
-                return rdepth+1
-        return maxDepth(self.root)
-        
 
+    def height(self):
+        return self.getHeight(self.root)
 
 
 import time
-t = Treap()
+
+t = AVLTree()
 s = time.time()
 for x in range(2 ** 20):
     t.insert(x)
@@ -289,4 +322,3 @@ for x in range(2 ** 20):
 e = time.time()
 print('time taken for 1Million deletions', e - s)
 print(t.height())
-

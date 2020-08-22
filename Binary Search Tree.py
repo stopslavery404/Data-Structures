@@ -217,9 +217,18 @@ class BinarySearchTree:
 
 t = BinarySearchTree()
 
-
-
-for x in range(2**10):
+import time
+s = time.time()
+for x in range(2 ** 20):
     t.insert(x)
-#t.preorder()
-print(t.height())
+print('height of tree after 1Million insertions', t.height())
+
+e = time.time()
+print('time taken for 1Million insertions', e - s)
+
+s = time.time()
+for x in range(2 ** 20):
+    t.delete(x)
+e = time.time()
+print('time taken for 1Million deletions', e - s)
+
