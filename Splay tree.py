@@ -218,19 +218,7 @@ class SplayTree:
                 self.left_rotate(x.parent)
                 self.right_rotate(x.parent)
 
-    def split(self, item):
-        root = self.search(item)
-        if not root:
-            return (SplayTree(), SplayTree())
-        if root.left and root.right:
-            root.left.parent = None
-            root.right.parent = None
-            left = SplayTree()
-            right = SplayTree()
-            left.root = root.left
-            right.root = root.right
-            root.left = root.right = None
-            return (left, right)
+
 
     def max(self):
         m = float('-inf')
