@@ -344,14 +344,15 @@ class RedBlackTree:
         return maxDepth(self.root)
 
     class Iterator:
-        def __init__(self, root):
+        def __init__(self, root,NIL):
             self.node = root
             self.stack = []
+            self.NIL=NIL
 
         def __next__(self):
-            if self.node is None and not self.stack:
+            if self.node is self.NIL and not self.stack:
                 raise StopIteration
-            while self.node:
+            while self.node !=self.NIL:
                 self.stack.append(self.node)
                 self.node = self.node.left
             self.node = self.stack.pop()
@@ -360,7 +361,7 @@ class RedBlackTree:
             return item
     
     def __iter__(self):
-        return self.Iterator(self.root)
+        return self.Iterator(self.root,self.NIL)
 
 
 t = RedBlackTree()
