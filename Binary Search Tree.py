@@ -114,7 +114,7 @@ class BinarySearchTree:
             node = node.right
         return node
 
-    def successor(self, node):
+    def inorderSuccessor(self, node):
         if not node:
             return
         if node.right:
@@ -126,7 +126,7 @@ class BinarySearchTree:
             if current_node.parent:
                 return current_node.parent
 
-    def predecessor(self, node):
+    def inorderPredecessor(self, node):
         if not node:
             return
         if node.left:
@@ -137,21 +137,64 @@ class BinarySearchTree:
                 current_node = current_node.parent
             if current_node.parent:
                 return current_node.parent
+    def predecessor(self,key):
+        if key<self.min():
+            return None
+        prev=None
+        curr=self.root
+        while curr and curr.data!=key:
+            prev=curr
+            if key<curr.data:
+                curr=curr.left
+            elif key>curr.data:
+                curr=curr.right
+            else:
+                break
+        if curr:
+            if curr.left:
+                return self.subtree_maximum(curr.left)
+            else:
+                return self.inorderPredecessor(curr)
+        elif prev.data<key:
+            return prev
+        return self.inorderPredecessor(prev)
+    def successor(self,key):
+        if key>self.max():
+            return None
+        prev=None
+        curr=self.root
+        while curr and curr.data!=key:
+            prev=curr
+            if key<curr.data:
+                curr=curr.left
+            elif key>curr.data:
+                curr=curr.right
+            else:
+                break            
+        if curr:
+            if curr.right:
+                return self.subtree_minimum(curr.right)
+            else:
+                return self.inorderSuccessor(curr)
+        elif prev.data>key:
+            return prev
+        return self.inorderSuccessor(prev)
 
     def delete(self, item):
         target = self.search(item)
         if target is None:
             return
         while target.right:
-            successor = self.successor(target)
+            successor = self.subtree_maximum(target)
             target.data, successor.data = successor.data, target.data
             target = successor
 
         if target.parent:
             if target.parent.left == target:
-                target.parent.left = None
+                target.parent.left = target.left
             else:
-                target.parent.right = None
+                target.parent.right = target.left
+            target.left=None
             target.parent = None
         elif target == self.root:
             self.root = None
@@ -216,7 +259,7 @@ class BinarySearchTree:
 
 
 t = BinarySearchTree()
-
+'''
 import time
 s = time.time()
 for x in range(2 ** 20):
@@ -231,4 +274,9 @@ for x in range(2 ** 20):
     t.delete(x)
 e = time.time()
 print('time taken for 1Million deletions', e - s)
-
+'''
+for x in [7, 4, 6, 8, 2, 1, 3, 5]:
+    t.insert(x)
+t.inorder()
+t.delete(4)
+t.inorder()
