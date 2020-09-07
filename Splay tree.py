@@ -168,7 +168,7 @@ class SplayTree:
             node = node.right
         return node
 
-    def successor(self, node):
+    def inorderSuccessor(self, node):
         if not node:
             return
         if node.right:
@@ -180,7 +180,7 @@ class SplayTree:
             if current_node.parent:
                 return current_node.parent
 
-    def predecessor(self, node):
+    def inorderPredecessor(self, node):
         if not node:
             return
         if node.left:
@@ -191,6 +191,50 @@ class SplayTree:
                 current_node = current_node.parent
             if current_node.parent:
                 return current_node.parent
+
+    def predecessor(self, key):
+        if key < self.min():
+            return None
+        prev = None
+        curr = self.root
+        while curr and curr.data != key:
+            prev = curr
+            if key < curr.data:
+                curr = curr.left
+            elif key > curr.data:
+                curr = curr.right
+            else:
+                break
+        if curr:
+            if curr.left:
+                return self.subtree_maximum(curr.left)
+            else:
+                return self.inorderPredecessor(curr)
+        elif prev.data < key:
+            return prev
+        return self.inorderPredecessor(prev)
+
+    def successor(self, key):
+        if key > self.max():
+            return None
+        prev = None
+        curr = self.root
+        while curr and curr.data != key:
+            prev = curr
+            if key < curr.data:
+                curr = curr.left
+            elif key > curr.data:
+                curr = curr.right
+            else:
+                break
+        if curr:
+            if curr.right:
+                return self.subtree_minimum(curr.right)
+            else:
+                return self.inorderSuccessor(curr)
+        elif prev.data > key:
+            return prev
+        return self.inorderSuccessor(prev)
 
     def splay(self, x):
         while x.parent != None:
