@@ -261,67 +261,67 @@ class SplayTree:
                 'zig-zag'
                 self.left_rotate(x.parent)
                 self.right_rotate(x.parent)
-    def split(self,key):
+
+    def split(self, key):
         '''returns two trees with left tree having keys 
         less than or equal to key and right tree 
         having keys larger than key'''
-        node=self.search(key)
-        left=SplayTree()
-        right=SplayTree()
+        node = self.search(key)
+        left = SplayTree()
+        right = SplayTree()
         if not node:
-            node=self.predecessor(key)
-        if not node:            
-            right.root=self.root
-            return left,right
-        right_node=node.right
-        right_node.parent=None
-        node.right=None
-        left.root=node
-        right.root=right_node
-        return (left,right)
-    
-    def merge(self,other):
+            node = self.predecessor(key)
+        if not node:
+            right.root = self.root
+            return left, right
+        right_node = node.right
+        right_node.parent = None
+        node.right = None
+        left.root = node
+        right.root = right_node
+        return (left, right)
+
+    def merge(self, other):
         if self.root is None and other.root is None:
             return
         if self.root is None:
-            self.root=other.root
-            other.root=None
+            self.root = other.root
+            other.root = None
             return
         if other.root is None:
             return
         self.splay(self.subtree_maximum(self.root))
         other.splay(other.subtree_minimum(other.root))
-        if other.root.data<=self.root.data:
+        if other.root.data <= self.root.data:
             raise ValueError('incompaitable trees\nYou can try Union')
-        self.root.right=other.root
-        other.root.parent=self.root
-        other.root=None
-        
-    def union(self,other):
+        self.root.right = other.root
+        other.root.parent = self.root
+        other.root = None
+
+    def union(self, other):
         '''takes union of elements of two trees'''
         if other.root is None:
             return
         if self.root is None:
-            self.root=other.root
-            other.root=None
+            self.root = other.root
+            other.root = None
             return
         self.splay(self.subtree_maximum(self.root))
-        other.splay(other.subtree_minimum(other.root))  
-        temp=None
-        if other.root.data<=self.root.data:
+        other.splay(other.subtree_minimum(other.root))
+        temp = None
+        if other.root.data <= self.root.data:
             other.splay(other.successor(self.root.data))
-            temp=SplayTree()
-            temp.root=other.root.left
-            other.root.left=None
-            temp.root.parent=None            
-        self.root.right=other.root
-        other.root.parent=self.root
-        other.root=None
+            temp = SplayTree()
+            temp.root = other.root.left
+            other.root.left = None
+            temp.root.parent = None
+        self.root.right = other.root
+        other.root.parent = self.root
+        other.root = None
         if temp:
             for x in temp:
                 self.insert(x)
-        
-        
+
     def max(self):
         m = float('-inf')
         node = self.root
@@ -383,8 +383,6 @@ class SplayTree:
 
 t = SplayTree()
 
-import time
-from random import shuffle
 '''
 s = time.time()
 a = [x for x in range(2 ** 20)]
