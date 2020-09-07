@@ -4,7 +4,6 @@ Created on Tue Aug 18 01:59:19 2020
 
 @author: rahul
 """
-from random import shuffle
 
 RED = True
 BLACK = False
@@ -199,8 +198,8 @@ class RedBlackTree:
             node = node.right
         return node
 
-    def successor(self, node):
-        if node is self.NIL:
+    def inorderSuccessor(self, node):
+        if node == self.NIL:
             return self.NIL
         if node.right != self.NIL:
             return self.subtree_minimum(node.right)
@@ -211,10 +210,10 @@ class RedBlackTree:
             if current_node.parent != self.NIL:
                 return current_node.parent
 
-    def predecessor(self, node):
-        if node is self.NIL:
+    def inorderPredecessor(self, node):
+        if node == self.NIL:
             return self.NIL
-        if node.left is not self.NIL:
+        if node.left != self.NIL:
             return self.subtree_maximum(node.left)
         else:
             current_node = node
@@ -222,6 +221,50 @@ class RedBlackTree:
                 current_node = current_node.parent
             if current_node.parent != self.NIL:
                 return current_node.parent
+
+    def predecessor(self, key):
+        if key < self.min():
+            return None
+        prev = None
+        curr = self.root
+        while curr != self.NIL and curr.data != key:
+            prev = curr
+            if key < curr.data:
+                curr = curr.left
+            elif key > curr.data:
+                curr = curr.right
+            else:
+                break
+        if curr != self.NIL:
+            if curr.left != self.NIL:
+                return self.subtree_maximum(curr.left)
+            else:
+                return self.inorderPredecessor(curr)
+        elif prev.data < key:
+            return prev
+        return self.inorderPredecessor(prev)
+
+    def successor(self, key):
+        if key > self.max():
+            return None
+        prev = None
+        curr = self.root
+        while curr != self.NIL and curr.data != key:
+            prev = curr
+            if key < curr.data:
+                curr = curr.left
+            elif key > curr.data:
+                curr = curr.right
+            else:
+                break
+        if curr != self.NIL:
+            if curr.right != self.NIL:
+                return self.subtree_minimum(curr.right)
+            else:
+                return self.inorderSuccessor(curr)
+        elif prev.data > key:
+            return prev
+        return self.inorderSuccessor(prev)
 
     def transplant(self, u, v):
         if u.parent == self.NIL:
@@ -330,6 +373,7 @@ class RedBlackTree:
             node = node.parent
             arr.append(node.data)
         print(arr)
+
     def height(self):
         def maxDepth(node):
             if node is None:
@@ -344,26 +388,27 @@ class RedBlackTree:
         return maxDepth(self.root)
 
     class Iterator:
-        def __init__(self, root,NIL):
+        def __init__(self, root, NIL):
             self.node = root
             self.stack = []
-            self.NIL=NIL
+            self.NIL = NIL
 
         def __next__(self):
             if self.node is self.NIL and not self.stack:
                 raise StopIteration
-            while self.node !=self.NIL:
+            while self.node != self.NIL:
                 self.stack.append(self.node)
                 self.node = self.node.left
             self.node = self.stack.pop()
             item = self.node.data
             self.node = self.node.right
             return item
-    
+
     def __iter__(self):
-        return self.Iterator(self.root,self.NIL)
+        return self.Iterator(self.root, self.NIL)
 
 
+'''
 t = RedBlackTree()
 import time
 
@@ -390,3 +435,6 @@ for x in range(2 ** 20):
 e = time.time()
 print('time taken for 1Million deletions', e - s)
 print(t.height())
+'''
+t = RedBlackTree([1, 2, 3, 4, 6, 7, 8])
+t.inorder()
