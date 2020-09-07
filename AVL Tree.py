@@ -19,11 +19,33 @@ class AVLTree:
     def __init__(self, arr=None):
         self.root = None
         if arr:
-            from random import shuffle
-            temp = [x for x in arr]
-            shuffle(temp)
-            for x in temp:
-                self.insert(x)
+            if self.isSorted(arr):
+                self.root=self.buildFromSorted(arr,0,len(arr)-1)
+            else:
+                from random import shuffle
+                temp = [x for x in arr]
+                shuffle(temp)
+                for x in temp:
+                    self.insert(x)
+    def isSorted(self,arr):
+        n=len(arr)
+        for i in range(n-1):
+            if arr[i]>arr[i+1]:
+                return False
+        else:
+            return True
+    def buildFromSorted(self,arr,i,j):
+        if i>j:
+            return None
+        mid=(i+j)//2
+        root=Node(arr[mid])
+        root.left=self.buildFromSorted(arr,i,mid-1)
+        if root.left:
+            root.left.parent=root
+        root.right=self.buildFromSorted(arr,mid+1,j)
+        if root.right:
+            root.right.parent=root
+        return root
 
     def getHeight(self, root):
         if not root:
