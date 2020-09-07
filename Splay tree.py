@@ -17,13 +17,34 @@ class Node:
 class SplayTree:
     def __init__(self, arr=None):
         self.root = None
-        self.size = 0
         if arr:
-            from random import shuffle
-            temp = [x for x in arr]
-            shuffle(temp)
-            for x in temp:
-                self.insert(x)
+            if self.isSorted(arr):
+                self.root=self.buildFromSorted(arr,0,len(arr)-1)
+            else:
+                from random import shuffle
+                temp = [x for x in arr]
+                shuffle(temp)
+                for x in temp:
+                    self.insert(x)
+    def isSorted(self,arr):
+        n=len(arr)
+        for i in range(n-1):
+            if arr[i]>arr[i+1]:
+                return False
+        else:
+            return True
+    def buildFromSorted(self,arr,i,j):
+        if i>j:
+            return None
+        mid=(i+j)//2
+        root=Node(arr[mid])
+        root.left=self.buildFromSorted(arr,i,mid-1)
+        if root.left:
+            root.left.parent=root
+        root.right=self.buildFromSorted(arr,mid+1,j)
+        if root.right:
+            root.right.parent=root
+        return root
 
     def left_rotate(self, x):
         y = x.right
@@ -82,7 +103,6 @@ class SplayTree:
             previous.left = new_node
         else:
             previous.right = new_node
-        self.size += 1
         self.splay(new_node)
 
     def inorder(self):
@@ -156,7 +176,7 @@ class SplayTree:
             else:
                 self.root = right
             right.parent = sMax
-        self.size -= 1
+        
 
     def subtree_minimum(self, node):
         while node.left:
@@ -382,8 +402,9 @@ class SplayTree:
 
 
 t = SplayTree()
-
 '''
+import time
+from random import shuffle
 s = time.time()
 a = [x for x in range(2 ** 20)]
 shuffle(a)
