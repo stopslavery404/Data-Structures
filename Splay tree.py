@@ -218,8 +218,6 @@ class SplayTree:
                 self.left_rotate(x.parent)
                 self.right_rotate(x.parent)
 
-
-
     def max(self):
         m = float('-inf')
         node = self.root
