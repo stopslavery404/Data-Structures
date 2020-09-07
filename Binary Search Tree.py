@@ -18,12 +18,33 @@ class BinarySearchTree:
     def __init__(self, arr=None):
         self.root = None
         if arr:
-            from random import shuffle
-            temp = [x for x in arr]
-            shuffle(temp)
-            for x in temp:
-                self.insert(x)
-
+            if self.isSorted(arr):
+                self.root=self.buildFromSorted(arr,0,len(arr)-1)
+            else:
+                from random import shuffle
+                temp = [x for x in arr]
+                shuffle(temp)
+                for x in temp:
+                    self.insert(x)
+    def isSorted(self,arr):
+        n=len(arr)
+        for i in range(n-1):
+            if arr[i]>arr[i+1]:
+                return False
+        else:
+            return True
+    def buildFromSorted(self,arr,i,j):
+        if i>j:
+            return None
+        mid=(i+j)//2
+        root=Node(arr[mid])
+        root.left=self.buildFromSorted(arr,i,mid-1)
+        if root.left:
+            root.left.parent=root
+        root.right=self.buildFromSorted(arr,mid+1,j)
+        if root.right:
+            root.right.parent=root
+        return root
     def insert(self, item):
         if self.root is None:
             self.root = Node(item)
@@ -48,7 +69,7 @@ class BinarySearchTree:
                     return
 
         insertUtil(self.root, item)
-
+    
     def inorder(self):
         node = self.root
 
@@ -226,6 +247,18 @@ class BinarySearchTree:
             node = node.parent
             arr.append(node.data)
         print(arr)
+    def height(self):
+        def maxDepth(node):
+            if node is None:
+                return 0
+            ldepth = maxDepth(node.left)
+            rdepth = maxDepth(node.right)
+            if ldepth > rdepth:
+                return ldepth + 1
+            else:
+                return rdepth + 1
+
+        return maxDepth(self.root)
 
     class Iterator:
         def __init__(self, root):
@@ -242,19 +275,6 @@ class BinarySearchTree:
             item = self.node.data
             self.node = self.node.right
             return item
-
-    def height(self):
-        def maxDepth(node):
-            if node is None:
-                return 0
-            ldepth = maxDepth(node.left)
-            rdepth = maxDepth(node.right)
-            if ldepth > rdepth:
-                return ldepth + 1
-            else:
-                return rdepth + 1
-
-        return maxDepth(self.root)
 
     def __iter__(self):
         return self.Iterator(self.root)
