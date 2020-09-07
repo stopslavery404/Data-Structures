@@ -39,7 +39,6 @@ class AVLTree:
         y = x.right
         b = y.left
 
-
         if b != None:
             b.parent = x
         x.right = b
@@ -58,8 +57,6 @@ class AVLTree:
     def right_rotate(self, x):
         y = x.left
         b = y.right
-
-   
 
         if b:
             b.parent = x
@@ -83,10 +80,10 @@ class AVLTree:
                 return Node(item)
             elif item < root.data:
                 root.left = insertUtil(root.left, item)
-                root.left.parent=root
-            elif item>root.data:
+                root.left.parent = root
+            elif item > root.data:
                 root.right = insertUtil(root.right, item)
-                root.right.parent=root
+                root.right.parent = root
 
             root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
 
@@ -105,8 +102,7 @@ class AVLTree:
             return root
 
         self.root = insertUtil(self.root, item)
-    
-        
+
     def inorder(self):
         node = self.root
 
@@ -195,17 +191,18 @@ class AVLTree:
                 current_node = current_node.parent
             if current_node.parent:
                 return current_node.parent
-    def predecessor(self,key):
-        if key<self.min():
+
+    def predecessor(self, key):
+        if key < self.min():
             return None
-        prev=None
-        curr=self.root
-        while curr and curr.data!=key:
-            prev=curr
-            if key<curr.data:
-                curr=curr.left
-            elif key>curr.data:
-                curr=curr.right
+        prev = None
+        curr = self.root
+        while curr and curr.data != key:
+            prev = curr
+            if key < curr.data:
+                curr = curr.left
+            elif key > curr.data:
+                curr = curr.right
             else:
                 break
         if curr:
@@ -213,28 +210,29 @@ class AVLTree:
                 return self.subtree_maximum(curr.left)
             else:
                 return self.inorderPredecessor(curr)
-        elif prev.data<key:
+        elif prev.data < key:
             return prev
         return self.inorderPredecessor(prev)
-    def successor(self,key):
-        if key>self.max():
+
+    def successor(self, key):
+        if key > self.max():
             return None
-        prev=None
-        curr=self.root
-        while curr and curr.data!=key:
-            prev=curr
-            if key<curr.data:
-                curr=curr.left
-            elif key>curr.data:
-                curr=curr.right
+        prev = None
+        curr = self.root
+        while curr and curr.data != key:
+            prev = curr
+            if key < curr.data:
+                curr = curr.left
+            elif key > curr.data:
+                curr = curr.right
             else:
-                break            
+                break
         if curr:
             if curr.right:
                 return self.subtree_minimum(curr.right)
             else:
                 return self.inorderSuccessor(curr)
-        elif prev.data>key:
+        elif prev.data > key:
             return prev
         return self.inorderSuccessor(prev)
 
@@ -243,31 +241,31 @@ class AVLTree:
             if not root:
                 return root
             elif item < root.data:
-                root.left = deleteUtil(root.left, item)                
+                root.left = deleteUtil(root.left, item)
                 if root.left:
-                    root.left.parent=root
+                    root.left.parent = root
             elif item > root.data:
                 root.right = deleteUtil(root.right, item)
                 if root.right:
-                    root.right.parent=root
+                    root.right.parent = root
             else:
                 if root.left is None:
                     temp = root.right
                     if temp:
-                        temp.parent=None
+                        temp.parent = None
                     root = None
                     return temp
                 elif root.right is None:
                     temp = root.left
                     if temp:
-                        temp.parent=None
+                        temp.parent = None
                     root = None
                     return temp
                 temp = self.subtree_minimum(root.right)
                 root.data = temp.data
                 root.right = deleteUtil(root.right, temp.data)
                 if root.right:
-                    root.right.parent=root
+                    root.right.parent = root
             if root is None:
                 return root
             root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
@@ -278,7 +276,7 @@ class AVLTree:
                 else:
                     root.left = self.left_rotate(root.left)
                     if root.left:
-                        root.left.parent=root
+                        root.left.parent = root
                     return self.right_rotate(root)
             if balance < -1:
                 if self.getBalance(root.right) <= 0:
@@ -286,10 +284,11 @@ class AVLTree:
                 else:
                     root.right = self.right_rotate(root.right)
                     if root.right:
-                        root.right.parent=root
+                        root.right.parent = root
                     return self.left_rotate(root)
             return root
-        self.root=deleteUtil(self.root, item)
+
+        self.root = deleteUtil(self.root, item)
 
     def max(self):
         m = float('-inf')
@@ -354,10 +353,8 @@ print('time taken for 1Million insertions', e - s)
 s = time.time()
 for x in range(2 ** 20):
     t.search(x)
-e = time.time()    
-print('time taken for 1Million searches', e-s)
-
-
+e = time.time()
+print('time taken for 1Million searches', e - s)
 
 s = time.time()
 for x in range(2 ** 20):
