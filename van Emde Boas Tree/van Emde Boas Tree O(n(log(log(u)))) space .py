@@ -38,15 +38,15 @@ class VEB:
 
     def high(self, x):
         # high(x)=x//int(sqrt(u))
-        return x >> (self.w // 2)
+        return x >> (self.w >> 1)
 
     def low(self, x):
         # low(x)= x%int(sqrt(u))
-        return x & (1 << (self.w // 2)) - 1
+        return x & (1 << (self.w >> 1)) - 1
 
     def index(self, i, j):
         # return i*int(sqrt(self.u))+j
-        return i << (self.w // 2) | j
+        return i << (self.w >> 1) | j
 
     def __init__(self, u):
         '''
@@ -93,13 +93,13 @@ class VEB:
             i = self.low(x)
             if self.w > 1:
                 if c not in self.cluster:
-                    self.cluster[c] = VEB(2 ** (self.w // 2))
+                    self.cluster[c] = VEB(2 ** (self.w >> 1))
                 if self.cluster[c].min is None:
                     if self.summary is None:
-                        self.summary = VEB(2 ** (self.w // 2))
+                        self.summary = VEB(2 ** (self.w >> 1))
                     self.summary.insert(c)
                 if c not in self.cluster:
-                    self.cluster[c] = VEB(2 ** (self.w // 2))
+                    self.cluster[c] = VEB(2 ** (self.w >> 1))
                 self.cluster[c].insert(i)
             if x > self.max:
                 self.max = x
