@@ -110,11 +110,12 @@ class AVLTree:
             root.height = 1 + max(self.getHeight(root.left), self.getHeight(root.right))
 
             balance = self.getBalance(root)
-            if balance > 1 and item < root.left.data:
-                return self.right_rotate(root)
-            elif balance > 1 and item >= root.left.data:
-                root.left = self.left_rotate(root.left)
-                return self.right_rotate(root)
+            if balance>1:    
+                if item < root.left.data:
+                    return self.right_rotate(root)
+                else:
+                    root.left = self.left_rotate(root.left)
+                    return self.right_rotate(root)
             elif balance < -1:
                 if item > root.right.data:
                     return self.left_rotate(root)
